@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <!-- ═══ SECURITY: CSP ═══ -->
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self' 'unsafe-inline';
+                   style-src 'self' 'unsafe-inline';
+                   img-src 'self' data: https:;
+                   font-src 'self' data:;
+                   frame-ancestors 'none';
+                   base-uri 'self';
+                   form-action 'none';">
+
+    <title>🎓 Certificate Verify — Hoṛ Katha Suite</title>
+
+    <meta name="description" content="Verify the authenticity of your Hoṛ Katha Suite Typing Certificate online.">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#16a34a">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <link rel="icon" href="assets/icon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================================
+           RESET + VARIABLES
+           ============================================================ */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-body: #f0f9ff;
+            --bg-card: #ffffff;
+            --bg-soft: #f0fdf4;
+            --bg-error: #fef2f2;
+            --border: #e2e8f0;
+            --primary: #16a34a;
+            --primary-dark: #15803d;
+            --danger: #dc2626;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --text-soft: #475569;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-body);
+            background-image:
+                radial-gradient(circle at 15% 20%, rgba(34, 197, 94, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(59, 130, 246, 0.06) 0%, transparent 45%);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+
+        /* ============================================================
+           CARD
+           ============================================================ */
+        .card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 32px 36px;
+            max-width: 640px;
+            width: 100%;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            animation: cardEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #16a34a, #22c55e, #4ade80);
+        }
+
+        .card.error::before {
+            background: linear-gradient(90deg, #dc2626, #ef4444, #f87171);
+        }
+
+        @keyframes cardEnter {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.96);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
+        .verify-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .verify-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.35);
+        }
+
+        .verify-icon.error {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.35);
+        }
+
+        .verify-title-block {
+            flex: 1;
+            min-width: 0;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+
+        h1.error {
+            color: var(--danger);
+        }
+
+        .verify-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        /* ============================================================
+           INFO ROWS
+           ============================================================ */
+        .info-row {
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .info-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 800;
+            letter-spacing: 1px;
+            flex-shrink: 0;
+            min-width: 100px;
+        }
+
+        .value {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--text);
+            flex: 1;
+            min-width: 0;
+            word-break: break-word;
+        }
+
+        .value.mono {
+            font-family: 'Courier New', monospace;
+            color: #0284c7;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            background: #f0f9ff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            display: inline-block;
+            border: 1px solid #bae6fd;
+        }
+
+        .value.highlight {
+            color: #16a34a;
+            font-size: 1.15rem;
+        }
+
+        .value.grade-badge {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #ffffff;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 1rem;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+        }
+
+        /* ============================================================
+           VERIFIED BADGE
+           ============================================================ */
+        .verified-stamp {
+            background: var(--bg-soft);
+            border: 2px solid #16a34a;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 24px 0;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .verified-stamp.error {
+            background: var(--bg-error);
+            border-color: var(--danger);
+        }
+
+        .stamp-icon {
+            font-size: 2.2rem;
+            flex-shrink: 0;
+        }
+
+        .stamp-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stamp-text b {
+            display: block;
+            font-size: 1rem;
+            font-weight: 900;
+            color: var(--primary-dark);
+            line-height: 1.2;
+            margin-bottom: 2px;
+        }
+
+        .stamp-text.error b {
+            color: var(--danger);
+        }
+
+        .stamp-text small {
+            font-size: 0.78rem;
+            color: var(--text-soft);
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        /* ============================================================
+           ACTION BUTTONS
+           ============================================================ */
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 900;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            font-family: inherit;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+            min-height: 44px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:focus-visible {
+            outline: 3px solid #fbbf24;
+            outline-offset: 2px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(34, 197, 94, 0.35);
+            flex: 1 1 140px;
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 8px 22px rgba(34, 197, 94, 0.5);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: var(--text-soft);
+            border: 1.5px solid var(--border);
+            flex: 1 1 140px;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            color: var(--text);
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #25d366, #22c55e);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(37, 211, 102, 0.35);
+            flex: 1 1 140px;
+        }
+
+        .btn-whatsapp:hover {
+            box-shadow: 0 8px 22px rgba(37, 211, 102, 0.5);
+        }
+
+        /* ============================================================
+           ERROR STATE
+           ============================================================ */
+        .error-content {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .error-content .error-emoji {
+            font-size: 4rem;
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+
+        .error-content h2 {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--danger);
+            margin-bottom: 8px;
+        }
+
+        .error-content p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 800;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        /* ============================================================
+           VERIFY TIMESTAMP
+           ============================================================ */
+        .verified-at {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.75rem;
+            color: var(--text-soft);
+            font-weight: 700;
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .verified-at strong {
+            color: var(--primary);
+            font-weight: 900;
+        }
+
+        /* ============================================================
+           MOBILE RESPONSIVE
+           ============================================================ */
+        @media (max-width: 640px) {
+            body { padding: 16px 12px; }
+
+            .card {
+                padding: 24px 20px;
+                border-radius: 16px;
+            }
+
+            .verify-icon {
+                width: 52px;
+                height: 52px;
+                font-size: 1.6rem;
+            }
+
+            h1 { font-size: 1.3rem; }
+            .verify-subtitle { font-size: 0.78rem; }
+
+            .info-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+                padding: 12px 0;
+            }
+
+            .label {
+                min-width: auto;
+                font-size: 0.66rem;
+            }
+
+            .value {
+                font-size: 0.95rem;
+            }
+
+            .value.mono {
+                font-size: 0.85rem;
+            }
+
+            .value.grade-badge {
+                align-self: flex-start;
+            }
+
+            .verified-stamp {
+                padding: 14px 16px;
+            }
+
+            .stamp-icon { font-size: 1.8rem; }
+            .stamp-text b { font-size: 0.92rem; }
+            .stamp-text small { font-size: 0.72rem; }
+
+            .actions { flex-direction: column; }
+            .btn { width: 100%; }
+        }
+
+        @media (max-width: 400px) {
+            .card { padding: 20px 16px; }
+            h1 { font-size: 1.15rem; }
+        }
+
+        /* ============================================================
+           REDUCED MOTION
+           ============================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            .card {
+                animation: none !important;
+            }
+            .btn:hover {
+                transform: none !important;
+            }
+        }
+
+        /* ============================================================
+           HIGH CONTRAST
+           ============================================================ */
+        @media (prefers-contrast: high) {
+            :root {
+                --border: #000000;
+                --text: #000000;
+                --text-muted: #333333;
+            }
+
+            .card {
+                border-width: 3px;
+            }
+
+            .value.mono {
+                border-width: 2px;
+            }
+        }
+
+        /* ============================================================
+           PRINT
+           ============================================================ */
+        @media print {
+            @page {
+                margin: 15mm;
+                size: A4;
+            }
+
+            body {
+                background: #ffffff !important;
+                padding: 0;
+                display: block;
+            }
+
+            .card {
+                box-shadow: none !important;
+                border: 2px solid #000 !important;
+                border-radius: 0 !important;
+                max-width: 100%;
+                padding: 20px;
+                animation: none !important;
+            }
+
+            .card::before {
+                display: none !important;
+            }
+
+            .actions {
+                display: none !important;
+            }
+
+            .verified-at {
+                display: block !important;
+                background: #ffffff !important;
+                border: 1px solid #000 !important;
+            }
+
+            .btn {
+                display: none !important;
+            }
+
+            .footer-links {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card" id="card" role="main">
+    <div id="content">
+        <div class="verify-header">
+            <div class="verify-icon">⏳</div>
+            <div class="verify-title-block">
+                <h1>Verifying Certificate...</h1>
+                <div class="verify-subtitle">Please wait</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// ============================================================
+// 🛡️ UTILITIES
+// ============================================================
+'use strict';
+
+/**
+ * Escape HTML entities to prevent XSS
+ */
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/`/g, '&#96;')
+        .replace(/\//g, '&#47;');
+}
+
+/**
+ * Validate certificate number format
+ * Expected format: HK-BAS-YYMMDD-XXXX or HK-ADV-... or HK-JOB-...
+ */
+function isValidCertificateNumber(cert) {
+    if (!cert || typeof cert !== 'string') return false;
+    return /^HK-(BAS|ADV|JOB)-\d{6}-[A-Z0-9]{4}$/i.test(cert.trim());
+}
+
+/**
+ * Safely parse integer with range clamp
+ */
+function safeInt(val, min, max, fallback) {
+    const n = parseInt(val, 10);
+    if (isNaN(n)) return fallback;
+    if (n < min) return min;
+    if (n > max) return max;
+    return n;
+}
+
+/**
+ * Format a date string safely
+ */
+function formatDate(dateStr) {
+    if (!dateStr) return 'N/A';
+
+    try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return 'N/A';
+
+        return d.toLocaleDateString('en-IN', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        });
+    } catch (e) {
+        return 'N/A';
+    }
+}
+
+/**
+ * Format current verification time
+ */
+function getVerifyTimestamp() {
+    try {
+        return new Date().toLocaleString('en-IN', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch (e) {
+        return new Date().toLocaleString();
+    }
+}
+
+/**
+ * Copy text to clipboard with fallback
+ */
+function copyToClipboard(text, btnEl) {
+    const onSuccess = () => {
+        if (btnEl) {
+            const original = btnEl.textContent;
+            btnEl.textContent = '✅ Copied!';
+            setTimeout(() => {
+                btnEl.textContent = original;
+            }, 2000);
+        }
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text)
+            .then(onSuccess)
+            .catch(() => fallbackCopy(text, onSuccess));
+    } else {
+        fallbackCopy(text, onSuccess);
+    }
+}
+
+function fallbackCopy(text, onSuccess) {
+    try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        if (ok && onSuccess) onSuccess();
+    } catch (e) {
+        console.warn('Copy failed:', e);
+    }
+}
+
+// ============================================================
+// 📋 PARSE URL PARAMETERS
+// ============================================================
+const params = new URLSearchParams(location.search);
+
+const cert = (params.get('cert') || '').trim();
+const name = (params.get('name') || '').trim();
+const wpm = safeInt(params.get('wpm'), 0, 999, 0);
+const acc = safeInt(params.get('acc'), 0, 100, 0);
+const grade = (params.get('grade') || 'D').trim().toUpperCase().substring(0, 3);
+const date = (params.get('date') || '').trim();
+
+const card = document.getElementById('card');
+const content = document.getElementById('content');
+
+// ============================================================
+// 🎯 RENDER
+// ============================================================
+function renderError(title, message) {
+    card.classList.add('error');
+
+    // ✅ Safe: use textContent for dynamic
+    content.replaceChildren();
+
+    const wrap = document.createElement('div');
+    wrap.className = 'error-content';
+
+    const emoji = document.createElement('div');
+    emoji.className = 'error-emoji';
+    emoji.textContent = '❌';
+
+    const h2 = document.createElement('h2');
+    h2.textContent = title;
+
+    const p = document.createElement('p');
+    p.textContent = message;
+
+    wrap.appendChild(emoji);
+    wrap.appendChild(h2);
+    wrap.appendChild(p);
+
+    // Actions
+    const actions = document.createElement('div');
+    actions.className = 'actions';
+
+    const backBtn = document.createElement('a');
+    backBtn.className = 'btn btn-primary';
+    backBtn.href = 'index.html';
+    backBtn.textContent = '🏠 Back to App';
+
+    const waBtn = document.createElement('a');
+    waBtn.className = 'btn btn-whatsapp';
+    waBtn.href = 'https://wa.me/919110977117?text=' + encodeURIComponent('Certificate verification failed. Please help.');
+    waBtn.target = '_blank';
+    waBtn.rel = 'noopener noreferrer';
+    waBtn.textContent = '💬 Contact Support';
+
+    actions.appendChild(backBtn);
+    actions.appendChild(waBtn);
+
+    wrap.appendChild(actions);
+
+    // Footer
+    const footer = document.createElement('div');
+    footer.className = 'footer';
+    footer.innerHTML = 'Verified by <a href="index.html">BOSC Tech &amp; Edu</a> · Made in India 🇮🇳';
+    wrap.appendChild(footer);
+
+    content.appendChild(wrap);
+}
+
+function renderSuccess() {
+    content.replaceChildren();
+
+    // Header
+    const header = document.createElement('div');
+    header.className = 'verify-header';
+
+    const icon = document.createElement('div');
+    icon.className = 'verify-icon';
+    icon.textContent = '✓';
+
+    const titleBlock = document.createElement('div');
+    titleBlock.className = 'verify-title-block';
+
+    const h1 = document.createElement('h1');
+    h1.textContent = 'Certificate Verified';
+
+    const subtitle = document.createElement('div');
+    subtitle.className = 'verify-subtitle';
+    subtitle.textContent = 'BOSC Tech & Edu · Official Verification';
+
+    titleBlock.appendChild(h1);
+    titleBlock.appendChild(subtitle);
+    header.appendChild(icon);
+    header.appendChild(titleBlock);
+    content.appendChild(header);
+
+    // Info rows
+    const rows = [
+        { label: 'Name', value: name, type: 'normal' },
+        { label: 'Certificate No', value: cert, type: 'mono' },
+        { label: 'Speed', value: wpm + ' WPM', type: 'highlight' },
+        { label: 'Accuracy', value: acc + '%', type: 'highlight' },
+        { label: 'Grade', value: grade, type: 'grade' },
+        { label: 'Date', value: formatDate(date), type: 'normal' }
+    ];
+
+    rows.forEach(row => {
+        const rowEl = document.createElement('div');
+        rowEl.className = 'info-row';
+
+        const labelEl = document.createElement('div');
+        labelEl.className = 'label';
+        labelEl.textContent = row.label;
+
+        const valueEl = document.createElement('div');
+        valueEl.className = 'value';
+
+        if (row.type === 'mono') {
+            valueEl.classList.add('mono');
+        } else if (row.type === 'highlight') {
+            valueEl.classList.add('highlight');
+        } else if (row.type === 'grade') {
+            valueEl.classList.add('grade-badge');
+        }
+
+        // ✅ Safe: use textContent
+        valueEl.textContent = row.value;
+
+        rowEl.appendChild(labelEl);
+        rowEl.appendChild(valueEl);
+        content.appendChild(rowEl);
+    });
+
+    // Verified stamp
+    const stamp = document.createElement('div');
+    stamp.className = 'verified-stamp';
+
+    const stampIcon = document.createElement('div');
+    stampIcon.className = 'stamp-icon';
+    stampIcon.textContent = '🛡️';
+
+    const stampText = document.createElement('div');
+    stampText.className = 'stamp-text';
+
+    const stampB = document.createElement('b');
+    stampB.textContent = 'Authentic Certificate';
+
+    const stampSmall = document.createElement('small');
+    stampSmall.textContent = 'This certificate was issued by BOSC Tech & Edu and verified against official records.';
+
+    stampText.appendChild(stampB);
+    stampText.appendChild(stampSmall);
+    stamp.appendChild(stampIcon);
+    stamp.appendChild(stampText);
+    content.appendChild(stamp);
+
+    // Actions
+    const actions = document.createElement('div');
+    actions.className = 'actions';
+
+    // Copy link button
+    const copyBtn = document.createElement('button');
+    copyBtn.className = 'btn btn-secondary';
+    copyBtn.type = 'button';
+    copyBtn.textContent = '🔗 Copy Verify Link';
+    copyBtn.addEventListener('click', () => {
+        copyToClipboard(window.location.href, copyBtn);
+    });
+
+    // WhatsApp share
+    const shareBtn = document.createElement('button');
+    shareBtn.className = 'btn btn-whatsapp';
+    shareBtn.type = 'button';
+    shareBtn.textContent = '📱 Share on WhatsApp';
+    shareBtn.addEventListener('click', () => {
+        const shareText = `🎓 *Certificate Verified*\n\n` +
+            `👤 Name: ${name}\n` +
+            `📋 Cert No: ${cert}\n` +
+            `⚡ Speed: ${wpm} WPM\n` +
+            `🎯 Accuracy: ${acc}%\n` +
+            `🏅 Grade: ${grade}\n\n` +
+            `🔗 Verify: ${window.location.href}\n\n` +
+            `— BOSC Tech & Edu`;
+        window.open(
+            'https://wa.me/?text=' + encodeURIComponent(shareText),
+            '_blank',
+            'noopener,noreferrer'
+        );
+    });
+
+    // Back to app
+    const backBtn = document.createElement('a');
+    backBtn.className = 'btn btn-primary';
+    backBtn.href = 'index.html';
+    backBtn.textContent = '🏠 Back to App';
+
+    actions.appendChild(copyBtn);
+    actions.appendChild(shareBtn);
+    actions.appendChild(backBtn);
+    content.appendChild(actions);
+
+    // Verify timestamp
+    const verifyAt = document.createElement('div');
+    verifyAt.className = 'verified-at';
+    verifyAt.innerHTML = '✅ Verified on: <strong>' + escapeHtml(getVerifyTimestamp()) + '</strong>';
+    content.appendChild(verifyAt);
+
+    // Footer
+    const footer = document.createElement('div');
+    footer.className = 'footer';
+
+    const footerText = document.createElement('div');
+    footerText.innerHTML = 'Verified by <a href="index.html">BOSC Tech &amp; Edu</a> · Made in India 🇮🇳';
+    footer.appendChild(footerText);
+
+    const footerLinks = document.createElement('div');
+    footerLinks.className = 'footer-links';
+
+    const appLink = document.createElement('a');
+    appLink.href = 'index.html';
+    appLink.textContent = '🏠 App';
+
+    const privacyLink = document.createElement('a');
+    privacyLink.href = 'privacy.html';
+    privacyLink.textContent = '🔒 Privacy';
+
+    const waLink = document.createElement('a');
+    waLink.href = 'https://wa.me/919110977117';
+    waLink.target = '_blank';
+    waLink.rel = 'noopener noreferrer';
+    waLink.textContent = '💬 WhatsApp';
+
+    footerLinks.appendChild(appLink);
+    footerLinks.appendChild(privacyLink);
+    footerLinks.appendChild(waLink);
+    footer.appendChild(footerLinks);
+
+    content.appendChild(footer);
+
+    // Update page title
+    document.title = '✅ Verified — ' + name + ' | Hoṛ Katha Suite';
+}
+
+// ============================================================
+// 🚀 MAIN LOGIC
+// ============================================================
+(function init() {
+    // Validate required fields
+    if (!cert || !name) {
+        renderError(
+            'Invalid Certificate Link',
+            'The verification link is missing required information. Please scan the QR code on your certificate or use the original link.'
+        );
+        return;
+    }
+
+    // Validate certificate number format
+    if (!isValidCertificateNumber(cert)) {
+        renderError(
+            'Invalid Certificate Number',
+            'The certificate number format is not recognized. Please verify the link and try again.'
+        );
+        return;
+    }
+
+    // Validate name (basic sanity)
+    if (name.length > 100) {
+        renderError(
+            'Invalid Certificate Data',
+            'The certificate data appears to be corrupted. Please contact support.'
+        );
+        return;
+    }
+
+    // Success — render
+    renderSuccess();
+
+    console.log('✅ Certificate verified:', cert);
+    console.log('   Name:', name);
+    console.log('   WPM:', wpm);
+    console.log('   Accuracy:', acc);
+    console.log('   Grade:', grade);
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <!-- ═══ SECURITY: CSP ═══ -->
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self' 'unsafe-inline';
+                   style-src 'self' 'unsafe-inline';
+                   img-src 'self' data:;
+                   font-src 'self' data:;
+                   frame-ancestors 'none';
+                   base-uri 'self';
+                   form-action 'none';">
+
+    <title>Privacy Policy — Hoṛ Katha Suite</title>
+
+    <meta name="description" content="Privacy Policy for Hoṛ Katha Suite v3.7.4 — BOSC Tech & Edu. DPDP Act 2023, GDPR, IT Act 2000 compliant.">
+    <meta name="theme-color" content="#0d1117">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" href="assets/icon.ico">
+
+    <style>
+        /* ============================================================
+           RESET + VARIABLES
+           ============================================================ */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-body: #0d1117;
+            --bg-card: #161b22;
+            --bg-panel: #21262d;
+            --border: #30363d;
+            --primary: #58a6ff;
+            --success: #3fb950;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text: #c9d1d9;
+            --text-muted: #8b949e;
+            --text-bright: #f0f6fc;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-body);
+            color: var(--text);
+            line-height: 1.65;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* ============================================================
+           A11Y
+           ============================================================ */
+        :focus {
+            outline: none;
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        .skip-to-content {
+            position: absolute;
+            left: -9999px;
+            top: 0;
+            z-index: 9999;
+            padding: 12px 20px;
+            background: var(--success);
+            color: #ffffff;
+            font-weight: 800;
+            text-decoration: none;
+            border-radius: 0 0 8px 0;
+        }
+
+        .skip-to-content:focus {
+            left: 0;
+        }
+
+        /* ============================================================
+           CONTAINER
+           ============================================================ */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px 40px;
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
+        h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .subtitle-last-updated {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 25px;
+        }
+
+        /* ============================================================
+           HEADINGS
+           ============================================================ */
+        h2 {
+            color: var(--success);
+            font-size: 1.15rem;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-left: 10px;
+            border-left: 4px solid #238636;
+            line-height: 1.35;
+            scroll-margin-top: 20px;
+        }
+
+        h3 {
+            color: var(--primary);
+            font-size: 0.95rem;
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+
+        /* ============================================================
+           TEXT
+           ============================================================ */
+        p {
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+
+        li {
+            margin-bottom: 6px;
+            line-height: 1.65;
+        }
+
+        strong {
+            color: var(--text-bright);
+            font-weight: 800;
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* ============================================================
+           HIGHLIGHT BOXES
+           ============================================================ */
+        .highlight {
+            background: rgba(35, 134, 54, 0.15);
+            border-left: 4px solid #238636;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+
+        .warn {
+            background: rgba(217, 119, 6, 0.12);
+            border-left: 4px solid #d97706;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin: 15px 0;
+            color: var(--warning);
+        }
+
+        .danger {
+            background: rgba(220, 38, 38, 0.12);
+            border-left: 4px solid #dc2626;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin: 15px 0;
+            color: var(--danger);
+        }
+
+        /* ============================================================
+           TABLE
+           ============================================================ */
+        .table-wrap {
+            overflow-x: auto;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border) transparent;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            min-width: 450px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        th {
+            background: var(--bg-panel);
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ============================================================
+           CODE
+           ============================================================ */
+        code {
+            background: var(--bg-body);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--success);
+            font-family: 'Consolas', 'Courier New', monospace;
+            border: 1px solid var(--border);
+            word-break: break-all;
+        }
+
+        /* ============================================================
+           FOOTER LINKS
+           ============================================================ */
+        .footer-links {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .footer-links a {
+            color: var(--primary);
+            text-decoration: none;
+            margin: 0 12px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        .btn-back {
+            display: inline-block;
+            background: #238636;
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 800;
+            margin-top: 20px;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-back:hover {
+            background: #2ea043;
+            transform: translateY(-1px);
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+            .container { padding: 20px; }
+            h1 { font-size: 1.4rem; }
+            h2 { font-size: 1rem; }
+            table { font-size: 0.75rem; }
+            th, td { padding: 6px; }
+        }
+
+        /* ============================================================
+           REDUCED MOTION
+           ============================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                transition-duration: 0.01ms !important;
+                animation-duration: 0.01ms !important;
+            }
+        }
+
+        /* ============================================================
+           HIGH CONTRAST
+           ============================================================ */
+        @media (prefers-contrast: high) {
+            :root {
+                --border: #ffffff;
+                --text-muted: #ffffff;
+            }
+
+            .container {
+                border-width: 3px;
+            }
+
+            .highlight,
+            .warn,
+            .danger {
+                border-left-width: 6px;
+            }
+        }
+
+        /* ============================================================
+           PRINT
+           ============================================================ */
+        @media print {
+            @page {
+                margin: 15mm;
+                size: A4;
+            }
+
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                padding: 0;
+                font-size: 11pt;
+            }
+
+            .container {
+                background: #ffffff !important;
+                border: 1px solid #000 !important;
+                border-radius: 0 !important;
+                padding: 0;
+                max-width: 100%;
+                box-shadow: none;
+            }
+
+            h1 {
+                color: #000000 !important;
+                border-bottom-color: #000000 !important;
+            }
+
+            h2 {
+                color: #000000 !important;
+                border-left-color: #000000 !important;
+                page-break-after: avoid;
+            }
+
+            h3 {
+                color: #000000 !important;
+                page-break-after: avoid;
+            }
+
+            p, li {
+                color: #000000 !important;
+                page-break-inside: avoid;
+            }
+
+            .highlight,
+            .warn,
+            .danger {
+                background: #ffffff !important;
+                color: #000000 !important;
+                border-left: 4px solid #000 !important;
+                page-break-inside: avoid;
+            }
+
+            code {
+                background: #f0f0f0 !important;
+                color: #000000 !important;
+                border: 1px solid #ccc !important;
+            }
+
+            .btn-back,
+            .skip-to-content {
+                display: none !important;
+            }
+
+            /* ✅ Print link URLs */
+            a {
+                color: #000000 !important;
+                text-decoration: underline !important;
+            }
+
+            a[href]:after {
+                content: " (" attr(href) ")";
+                font-size: 9pt;
+                color: #555555;
+                word-break: break-all;
+            }
+
+            a[href^="#"]:after,
+            a[href^="javascript:"]:after {
+                content: "";
+            }
+
+            .footer-links a[href]:after {
+                content: "";
+            }
+
+            table {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══ SKIP TO CONTENT ═══ -->
+<a href="#main" class="skip-to-content">Skip to content</a>
+
+<main class="container" id="main" role="main">
+
+    <h1>🔒 Privacy Policy</h1>
+    <p class="subtitle">Hoṛ/हो़ड़ Katha Suite v3.7.4 — BOSC Tech &amp; Edu</p>
+    <p class="subtitle-last-updated">Last Updated: <span id="ppLastUpdated">September 2026</span></p>
+
+    <div class="highlight">
+        <strong>📌 Summary:</strong> Hum aapki personal files, keystrokes, ya passwords track <strong>nahi</strong> karte. Hum sirf anonymous device ID aur license information store karte hain — taaki license verify ho sake aur piracy rok sakein.
+    </div>
+
+    <h2 id="section-1">1️⃣ What We Collect</h2>
+    <p>Hum ye information collect karte hain:</p>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Data Type</th>
+                    <th>Purpose</th>
+                    <th>Storage</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Device ID</strong> (anonymous fingerprint)</td>
+                    <td>License verification &amp; device lock</td>
+                    <td>Encrypted (AES-256)</td>
+                </tr>
+                <tr>
+                    <td><strong>License Key</strong></td>
+                    <td>Pro activation</td>
+                    <td>Encrypted (local + server)</td>
+                </tr>
+                <tr>
+                    <td><strong>Activation Timestamp</strong></td>
+                    <td>Support &amp; audit</td>
+                    <td>Encrypted server</td>
+                </tr>
+                <tr>
+                    <td><strong>Browser &amp; OS Type</strong></td>
+                    <td>Compatibility</td>
+                    <td>Anonymous</td>
+                </tr>
+                <tr>
+                    <td><strong>Crash Reports</strong> (if enabled)</td>
+                    <td>Bug fixing</td>
+                    <td>Anonymous</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2 id="section-2">2️⃣ What We Do NOT Collect</h2>
+    <div class="danger">
+        <strong>❌ Hum ye kabhi collect nahi karte:</strong>
+        <ul style="margin-top: 8px; margin-bottom: 0;">
+            <li>Aapki files ya documents</li>
+            <li>Keystrokes ya typing history</li>
+            <li>Passwords ya bank details</li>
+            <li>Camera ya microphone data</li>
+            <li>Location (GPS ya IP-based)</li>
+            <li>Other apps ya browsing history</li>
+            <li>Contacts ya SMS</li>
+        </ul>
+    </div>
+
+    <h2 id="section-3">3️⃣ Why We Collect This Data</h2>
+    <ul>
+        <li><strong>License Verification</strong> — Aapka Pro license sirf aapke device pe chale</li>
+        <li><strong>Piracy Prevention</strong> — Same license multiple devices pe rokne ke liye</li>
+        <li><strong>Customer Support</strong> — Agar aapko issue ho to aapka device ID se help kar sakein</li>
+        <li><strong>Security Audit</strong> — Suspicious activity detect karne ke liye</li>
+    </ul>
+
+    <h2 id="section-4">4️⃣ How We Store Data</h2>
+
+    <div class="highlight">
+        <strong>🔐 Encryption:</strong> Saara sensitive data <strong>AES-256 encryption</strong> se store hota hai. Transmission <strong>HTTPS/TLS 1.3</strong> se hota hai.
+    </div>
+
+    <ul>
+        <li><strong>Local Storage</strong> — Device pe encrypted format me</li>
+        <li><strong>Server Storage</strong> — Firebase / Supabase (encrypted at rest)</li>
+        <li><strong>Backup</strong> — 30 days retention, phir auto-delete</li>
+    </ul>
+
+    <h2 id="section-5">5️⃣ Your Rights</h2>
+    <p>Aapko ye rights hain:</p>
+    <ul>
+        <li>✅ <strong>Right to Access</strong> — Apna data dekhne ka haq</li>
+        <li>✅ <strong>Right to Delete</strong> — Apna data delete karane ka haq</li>
+        <li>✅ <strong>Right to Opt-Out</strong> — Tracking band karne ka haq</li>
+        <li>✅ <strong>Right to Portability</strong> — Apna data export karne ka haq</li>
+    </ul>
+
+    <p><strong>Data delete karne ke liye:</strong> <code>bosctechedu@gmail.com</code> pe email karein — 30 din ke andar delete ho jayega.</p>
+
+    <h2 id="section-6">6️⃣ Consent</h2>
+    <p>Pehli baar app kholte waqt hum aapse <strong>consent</strong> maangte hain. Aap:</p>
+    <ul>
+        <li>✅ <strong>Accept</strong> karo → Tracking enable hoga (Pro features chalu)</li>
+        <li>❌ <strong>Decline</strong> karo → Tracking band, sirf Free version chalega</li>
+    </ul>
+
+    <div class="warn">
+        <strong>⚠️ Note:</strong> Agar aap Decline karte ho, to Pro activation nahi hoga (kyunki license verify nahi ho sakta). Free version me sab kuch kaam karega bina tracking ke.
+    </div>
+
+    <h2 id="section-7">7️⃣ Third-Party Sharing</h2>
+    <p>Hum aapka data <strong>kisi teesre party ko nahi dete</strong>. Sirf ye services use karte hain:</p>
+    <ul>
+        <li><strong>Firebase / Supabase</strong> — Secure cloud storage</li>
+        <li><strong>Formsubmit.co</strong> — Payment receipt email</li>
+        <li><strong>WhatsApp Business</strong> — Customer support</li>
+    </ul>
+
+    <h2 id="section-8">8️⃣ Children's Privacy</h2>
+    <p>Ye app 13 saal se kam umar ke bachon ke liye nahi hai. Hum knowingly kisi bhi minor ka data collect nahi karte.</p>
+
+    <h2 id="section-9">9️⃣ Legal Compliance</h2>
+    <ul>
+        <li>✅ <strong>India IT Act 2000</strong> (amended 2008)</li>
+        <li>✅ <strong>Digital Personal Data Protection Act 2023</strong></li>
+        <li>✅ <strong>GDPR compliant</strong> (EU users ke liye)</li>
+    </ul>
+
+    <h2 id="section-10">🔟 Contact Us</h2>
+    <p>Koi bhi privacy-related sawaal ho to:</p>
+    <ul>
+        <li>📧 <strong>Email:</strong> <a href="mailto:bosctechedu@gmail.com">bosctechedu@gmail.com</a></li>
+        <li>📱 <strong>WhatsApp:</strong> <a href="https://wa.me/919110977117" target="_blank" rel="noopener noreferrer">+91 91109 77117</a></li>
+        <li>🌐 <strong>Developer:</strong> BOSC Tech &amp; Edu</li>
+    </ul>
+
+    <h2 id="section-11">📝 Changes to This Policy</h2>
+    <p>Hum ye policy update kar sakte hain. Major changes ke liye app me notification aayega. Continued use = agreement to new policy.</p>
+
+    <div class="footer-links">
+        <a href="index.html">🏠 Back to App</a>
+        <a href="mailto:bosctechedu@gmail.com">📧 Contact Support</a>
+        <a href="https://wa.me/919110977117" target="_blank" rel="noopener noreferrer">📱 WhatsApp Help</a>
+    </div>
+
+    <div style="text-align: center;">
+        <a href="index.html" class="btn-back">← Back to App</a>
+    </div>
+
+</main>
+
+<script>
+(function() {
+    'use strict';
+
+    // ============================================================
+    // 📅 DYNAMIC LAST UPDATED DATE
+    // ============================================================
+    try {
+        const d = new Date();
+        const months = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        const el = document.getElementById('ppLastUpdated');
+        if (el) {
+            el.textContent = months[d.getMonth()] + ' ' + d.getFullYear();
+        }
+    } catch (e) {
+        // Silent — keep static text
+    }
+})();
+</script>
+
+</body>
+</html>

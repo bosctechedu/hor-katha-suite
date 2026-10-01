@@ -1,0 +1,84 @@
+{
+  "name": "Hoṛ/हो़ड़ Katha Suite Ultra",
+  "short_name": "Hoṛ Katha",
+  "description": "Multi-script typing suite for Santali, Hindi, English, Ol Chiki — with Kruti Dev, script converter, typing practice and certificate generation. By BOSC Tech & Edu.",
+  "id": "/",
+  "start_url": "./index.html?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "dir": "ltr",
+  "lang": "en-IN",
+  "categories": ["productivity", "education", "utilities"],
+  "background_color": "#0d1117",
+  "theme_color": "#0d1117",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Note",
+      "short_name": "New",
+      "description": "Open a fresh editor",
+      "url": "./index.html?action=new",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Typing Practice",
+      "short_name": "Practice",
+      "description": "Jump directly to typing practice",
+      "url": "./index.html?action=practice",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Open Manual",
+      "short_name": "Manual",
+      "description": "Read the user manual",
+      "url": "./manual.html",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

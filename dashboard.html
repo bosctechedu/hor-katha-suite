@@ -1,0 +1,2291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Admin Dashboard — Hoṛ Katha Suite</title>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- 🔒 SECURITY: CSP                                             -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- ⚠️ Note: allow unsafe-inline for Firebase SDK + inline styles -->
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self' 'unsafe-inline' https://www.gstatic.com https://*.firebaseio.com https://*.firebasedatabase.app;
+                   style-src 'self' 'unsafe-inline';
+                   img-src 'self' data: https:;
+                   connect-src 'self' https://*.firebaseio.com wss://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app https://identitytoolkit.googleapis.com https://securetoken.googleapis.com;
+                   font-src 'self' data:;
+                   frame-ancestors 'none';
+                   base-uri 'self';
+                   form-action 'self';">
+
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <style>
+        /* ============================================================
+           RESET + VARIABLES
+           ============================================================ */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-body: #0d1117;
+            --bg-card: #161b22;
+            --bg-panel: #21262d;
+            --border: #30363d;
+            --primary: #58a6ff;
+            --primary-hover: #388bfd;
+            --success: #3fb950;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --purple: #a371f7;
+            --text: #c9d1d9;
+            --text-muted: #8b949e;
+            --text-bright: #f0f6fc;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-body);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge-live {
+            background: #238636;
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 800;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        button {
+            background: #1f6feb;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background-color 0.15s, transform 0.15s;
+            font-family: inherit;
+        }
+
+        button:hover {
+            background: var(--primary-hover);
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        button:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        button.green { background: #238636; }
+        button.green:hover { background: #2ea043; }
+        button.gray { background: var(--border); }
+        button.gray:hover { background: #484f58; }
+        button.red { background: #dc2626; }
+        button.red:hover { background: var(--danger); }
+
+        /* ============================================================
+           STATS GRID
+           ============================================================ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #1f6feb, var(--primary));
+        }
+
+        .stat-card.green::before { background: linear-gradient(90deg, #238636, var(--success)); }
+        .stat-card.orange::before { background: linear-gradient(90deg, #d97706, var(--warning)); }
+        .stat-card.purple::before { background: linear-gradient(90deg, #8957e5, var(--purple)); }
+
+        .stat-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .stat-card.green .stat-value { color: var(--success); }
+        .stat-card.orange .stat-value { color: var(--warning); }
+        .stat-card.purple .stat-value { color: var(--purple); }
+
+        .stat-sub {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+            font-weight: 700;
+        }
+
+        /* ============================================================
+           PLAN BREAKDOWN
+           ============================================================ */
+        .plan-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .plan-card {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .plan-card h3 {
+            font-size: 0.85rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .plan-card .plan-count {
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .plan-card .plan-pct {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .plan-bar {
+            height: 6px;
+            background: var(--bg-panel);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .plan-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #1f6feb, var(--primary));
+            transition: width 0.6s ease;
+            width: 0%;
+        }
+
+        .plan-card.p1 .plan-bar-fill { background: linear-gradient(90deg, #0284c7, #38bdf8); }
+        .plan-card.p2 .plan-bar-fill { background: linear-gradient(90deg, #d97706, var(--warning)); }
+        .plan-card.p3 .plan-bar-fill { background: linear-gradient(90deg, #075985, #0ea5e9); }
+
+        /* ============================================================
+           TABLE SECTION
+           ============================================================ */
+        .table-section {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .table-title {
+            font-size: 1rem;
+            font-weight: 900;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .row-count {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            background: var(--bg-panel);
+            padding: 3px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar select,
+        .filter-bar input {
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .filter-bar select:focus,
+        .filter-bar input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            max-height: 500px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+
+        thead th {
+            background: var(--bg-panel);
+            color: var(--primary);
+            text-align: left;
+            padding: 10px 12px;
+            font-weight: 900;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--bg-panel);
+            color: var(--text);
+        }
+
+        tbody tr:hover {
+            background: #1c2128;
+        }
+
+        .mono {
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: var(--primary);
+        }
+
+        .plan-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.68rem;
+            font-weight: 900;
+        }
+
+        .plan-badge.p1 {
+            background: rgba(2,132,199,0.15);
+            color: #38bdf8;
+            border: 1px solid #0284c7;
+        }
+        .plan-badge.p2 {
+            background: rgba(217,119,6,0.15);
+            color: var(--warning);
+            border: 1px solid #d97706;
+        }
+        .plan-badge.p3 {
+            background: rgba(7,89,133,0.15);
+            color: #0ea5e9;
+            border: 1px solid #075985;
+        }
+
+        .row-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .row-btn {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.66rem;
+            font-weight: 800;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+
+        .row-btn.view {
+            background: rgba(47,129,247,0.15);
+            color: var(--primary);
+            border: 1px solid #1f6feb;
+        }
+        .row-btn.view:hover {
+            background: #1f6feb;
+            color: #fff;
+        }
+
+        .row-btn.delete {
+            background: rgba(220,38,38,0.15);
+            color: var(--danger);
+            border: 1px solid #dc2626;
+        }
+        .row-btn.delete:hover {
+            background: #dc2626;
+            color: #fff;
+        }
+
+        .row-btn:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 1px;
+        }
+
+        .time-ago {
+            color: var(--text-muted);
+            font-size: 0.72rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state .emoji {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 0.85rem;
+        }
+
+        /* ============================================================
+           ALERT BOX
+           ============================================================ */
+        .alert-box {
+            background: rgba(220,38,38,0.1);
+            border: 1.5px solid #dc2626;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 15px;
+            color: var(--danger);
+            font-size: 0.82rem;
+            font-weight: 700;
+            display: none;
+        }
+
+        .alert-box.show { display: block; }
+
+        .alert-box .alert-title {
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+
+        /* ============================================================
+           STATUS INDICATOR
+           ============================================================ */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 20px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        .dot.red { background: var(--danger); }
+        .dot.orange { background: var(--warning); }
+
+        /* ============================================================
+           AUTH GATE
+           ============================================================ */
+        .auth-gate {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(8px);
+            padding: 20px;
+        }
+
+        .auth-box {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 32px 40px;
+            max-width: 440px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+
+        .auth-box h2 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+
+        .auth-box p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 22px;
+            line-height: 1.5;
+        }
+
+        .auth-box label {
+            display: block;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            margin-top: 14px;
+        }
+
+        .auth-box input {
+            width: 100%;
+            background: var(--bg-body);
+            border: 1.5px solid var(--border);
+            color: var(--text);
+            padding: 12px 14px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            outline: none;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .auth-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+        }
+
+        .auth-box button {
+            width: 100%;
+            padding: 12px;
+            font-size: 0.9rem;
+            margin-top: 22px;
+            font-weight: 900;
+        }
+
+        .auth-error {
+            color: var(--danger);
+            font-size: 0.78rem;
+            margin-top: 12px;
+            padding: 8px 12px;
+            background: rgba(220,38,38,0.1);
+            border: 1px solid rgba(220,38,38,0.3);
+            border-radius: 6px;
+            display: none;
+        }
+
+        .auth-error.show { display: block; }
+
+        .auth-loading {
+            display: none;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-top: 12px;
+        }
+
+        .auth-loading.show { display: block; }
+
+        .user-info {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.72rem;
+            color: var(--success);
+            font-weight: 800;
+        }
+
+        .user-info::before {
+            content: '👤';
+            font-size: 0.85rem;
+        }
+
+        /* ============================================================
+           SECRET SETUP MODAL
+           ============================================================ */
+        .secret-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+            backdrop-filter: blur(8px);
+            padding: 20px;
+        }
+
+        .secret-modal.active { display: flex; }
+
+        .secret-box {
+            background: var(--bg-card);
+            border: 1.5px solid #d97706;
+            border-radius: 12px;
+            padding: 28px 32px;
+            max-width: 520px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.9);
+        }
+
+        .secret-box h2 {
+            color: var(--warning);
+            font-size: 1.15rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .secret-box .ss-desc {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 16px;
+            line-height: 1.55;
+        }
+
+        .secret-box .ss-desc code {
+            background: var(--bg-body);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--success);
+            font-family: monospace;
+            font-size: 0.75rem;
+        }
+
+        .secret-box label {
+            display: block;
+            font-size: 0.72rem;
+            font-weight: 900;
+            color: var(--warning);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .secret-box input {
+            width: 100%;
+            background: var(--bg-body);
+            border: 1.5px solid #d97706;
+            color: var(--text);
+            padding: 11px 14px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            outline: none;
+            font-family: monospace;
+            letter-spacing: 0.5px;
+            transition: border-color 0.2s;
+        }
+
+        .secret-box input:focus {
+            border-color: var(--warning);
+            box-shadow: 0 0 0 3px rgba(217,119,6,0.2);
+        }
+
+        .secret-box .ss-warn {
+            background: rgba(220,38,38,0.1);
+            border: 1px solid #dc2626;
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 0.72rem;
+            color: var(--danger);
+            font-weight: 700;
+            margin-top: 12px;
+            line-height: 1.4;
+        }
+
+        .secret-box .ss-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .secret-box .ss-buttons button {
+            flex: 1;
+        }
+
+        /* ============================================================
+           DEVICE MODAL
+           ============================================================ */
+        .device-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(6px);
+            padding: 16px;
+        }
+
+        .device-modal.active { display: flex; }
+
+        .device-modal-box {
+            background: var(--bg-card);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+
+        .device-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1.5px solid var(--border);
+        }
+
+        .device-modal-header h3 {
+            color: var(--primary);
+            font-size: 1.05rem;
+            font-weight: 900;
+        }
+
+        .device-modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            font-weight: 900;
+            cursor: pointer;
+            padding: 4px 10px;
+        }
+
+        .device-modal-close:hover {
+            color: var(--danger);
+        }
+
+        .device-info-card {
+            background: var(--bg-body);
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+        }
+
+        .device-info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px dashed var(--bg-panel);
+            font-size: 0.82rem;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .device-info-row:last-child {
+            border-bottom: none;
+        }
+
+        .device-info-label {
+            color: var(--text-muted);
+            font-weight: 800;
+        }
+
+        .device-info-value {
+            color: var(--text);
+            font-weight: 700;
+            font-family: monospace;
+            text-align: right;
+            word-break: break-word;
+            max-width: 100%;
+        }
+
+        .device-info-value.real-name {
+            font-family: inherit;
+            color: var(--success);
+            font-size: 1rem;
+            font-weight: 900;
+        }
+
+        .badge-suspect {
+            display: inline-block;
+            background: rgba(220,38,38,0.2);
+            color: var(--danger);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.68rem;
+            font-weight: 900;
+            border: 1px solid #dc2626;
+            margin-left: 8px;
+        }
+
+        .badge-normal {
+            display: inline-block;
+            background: rgba(35,134,54,0.2);
+            color: var(--success);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.68rem;
+            font-weight: 900;
+            border: 1px solid #238636;
+            margin-left: 8px;
+        }
+
+        /* ============================================================
+           MOBILE RESPONSIVE
+           ============================================================ */
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            .stat-value { font-size: 1.5rem; }
+            table { font-size: 0.72rem; }
+            thead th, tbody td { padding: 8px 6px; }
+            .header { flex-direction: column; align-items: stretch; }
+            .table-header { flex-direction: column; align-items: stretch; }
+            .auth-box { padding: 24px 20px; }
+            .device-modal-box { padding: 16px; }
+            .secret-box { padding: 22px 20px; }
+
+            .row-actions { flex-direction: column; }
+            .row-btn { padding: 4px 6px; font-size: 0.62rem; }
+
+            .hide-mobile { display: none !important; }
+        }
+
+        @media (max-width: 500px) {
+            .filter-bar { flex-direction: column; }
+            .filter-bar select,
+            .filter-bar input {
+                width: 100%;
+            }
+        }
+
+        /* ============================================================
+           REDUCED MOTION
+           ============================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            .badge-live,
+            .dot {
+                animation: none;
+            }
+
+            .plan-bar-fill {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 🔐 SECRET SETUP MODAL                                       -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="secret-modal" id="secretModal" role="dialog" aria-modal="true" aria-labelledby="secretTitle">
+    <div class="secret-box">
+        <h2 id="secretTitle">🔐 Name Decryption Secret Setup</h2>
+        <div class="ss-desc">
+            Customer names को Firebase में encrypted store किया जाता है।
+            Decrypt करने के लिए वही secret चाहिए जो <code>tracker.js</code> में use हुआ था।
+        </div>
+        <label for="nameSecretInput">🔑 NAME_ENCRYPTION_SECRET</label>
+        <input type="password"
+               id="nameSecretInput"
+               placeholder="Enter Name Secret (min 16 chars)..."
+               autocomplete="off"
+               spellcheck="false">
+        <div class="ss-warn">
+            ⚠️ <b>Security:</b> यह secret किसी को न दें।
+            sessionStorage में save होगी (tab close = clear)।
+        </div>
+        <div class="ss-buttons">
+            <button class="red" id="clearSecretBtn" type="button">🗑️ Clear &amp; Logout</button>
+            <button class="green" id="saveSecretBtn" type="button">💾 Save &amp; Continue</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 🔐 AUTH GATE                                                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="auth-gate" id="authGate" role="dialog" aria-modal="true">
+    <div class="auth-box">
+        <h2>🔐 Admin Dashboard Login</h2>
+        <p>
+            Firebase authenticated access only.<br>
+            Enter your admin credentials to continue.
+        </p>
+
+        <label for="loginEmail">Email</label>
+        <input type="email"
+               id="loginEmail"
+               placeholder="admin@example.com"
+               autocomplete="username"
+               autocapitalize="off"
+               autocorrect="off"
+               spellcheck="false">
+
+        <label for="loginPassword">Password</label>
+        <input type="password"
+               id="loginPassword"
+               placeholder="••••••••••••"
+               autocomplete="current-password">
+
+        <button class="green" id="loginBtn" type="button">🔓 Login</button>
+
+        <div class="auth-error" id="authError" role="alert"></div>
+        <div class="auth-loading" id="authLoading">⏳ Logging in...</div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 📊 DASHBOARD CONTENT                                        -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="container" id="dashboardContent" style="display:none;">
+
+    <div class="header">
+        <h1>
+            📊 License Dashboard
+            <span class="badge-live" id="liveBadge">● LIVE</span>
+        </h1>
+        <div class="header-actions">
+            <span class="user-info" id="userInfo">admin</span>
+            <button class="green" id="refreshBtn" type="button">🔄 Refresh</button>
+            <button id="exportCsvBtn" type="button">📥 Export CSV</button>
+            <button class="gray" id="clearFiltersBtn" type="button">🧹 Clear Filters</button>
+            <button class="red" id="logoutBtn" type="button">🚪 Logout</button>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <span class="status-indicator" id="connStatus">
+            <span class="dot" id="connDot"></span>
+            <span id="connText">Connecting...</span>
+        </span>
+    </div>
+
+    <div class="alert-box" id="alertBox" role="alert">
+        <div class="alert-title">⚠️ Alert</div>
+        <div id="alertText"></div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">📋 Total Activations</div>
+            <div class="stat-value" id="statTotal">0</div>
+            <div class="stat-sub">All time</div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-label">✅ Active Today</div>
+            <div class="stat-value" id="statToday">0</div>
+            <div class="stat-sub">Last 24 hours</div>
+        </div>
+        <div class="stat-card orange">
+            <div class="stat-label">📅 This Week</div>
+            <div class="stat-value" id="statWeek">0</div>
+            <div class="stat-sub">Last 7 days</div>
+        </div>
+        <div class="stat-card purple">
+            <div class="stat-label">📱 Unique Devices</div>
+            <div class="stat-value" id="statDevices">0</div>
+            <div class="stat-sub">Unique HWIDs</div>
+        </div>
+    </div>
+
+    <div class="plan-breakdown">
+        <div class="plan-card p1">
+            <h3>👤 P1 — Community</h3>
+            <div class="plan-count" id="planP1Count">0</div>
+            <div class="plan-pct" id="planP1Pct">0% of total</div>
+            <div class="plan-bar"><div class="plan-bar-fill" id="planP1Bar"></div></div>
+        </div>
+        <div class="plan-card p2">
+            <h3>🖨️ P2 — Commercial</h3>
+            <div class="plan-count" id="planP2Count">0</div>
+            <div class="plan-pct" id="planP2Pct">0% of total</div>
+            <div class="plan-bar"><div class="plan-bar-fill" id="planP2Bar"></div></div>
+        </div>
+        <div class="plan-card p3">
+            <h3>🏢 P3 — Enterprise</h3>
+            <div class="plan-count" id="planP3Count">0</div>
+            <div class="plan-pct" id="planP3Pct">0% of total</div>
+            <div class="plan-bar"><div class="plan-bar-fill" id="planP3Bar"></div></div>
+        </div>
+    </div>
+
+    <div class="table-section">
+        <div class="table-header">
+            <div class="table-title">
+                🕐 Recent Activations
+                <span class="row-count" id="rowCount">0 shown</span>
+            </div>
+            <div class="filter-bar">
+                <select id="filterPlan" aria-label="Filter by plan">
+                    <option value="">All Plans</option>
+                    <option value="P1">P1 — Community</option>
+                    <option value="P2">P2 — Commercial</option>
+                    <option value="P3">P3 — Enterprise</option>
+                </select>
+                <select id="filterRange" aria-label="Filter by date range">
+                    <option value="">All Time</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                </select>
+                <input type="text"
+                       id="searchInput"
+                       placeholder="🔍 Search device/name..."
+                       autocomplete="off"
+                       spellcheck="false"
+                       aria-label="Search">
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Device ID</th>
+                        <th>Customer Name</th>
+                        <th>Plan</th>
+                        <th class="hide-mobile">Action</th>
+                        <th class="hide-mobile">Browser</th>
+                        <th class="hide-mobile">Platform</th>
+                        <th>Time</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td colspan="9">
+                            <div class="empty-state">
+                                <div class="emoji">⏳</div>
+                                <p>Loading data from Firebase...</p>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 🔍 DEVICE MODAL                                             -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="device-modal" id="deviceModal" role="dialog" aria-modal="true">
+    <div class="device-modal-box">
+        <div class="device-modal-header">
+            <h3>🔍 Device Verification</h3>
+            <button class="device-modal-close" id="deviceModalClose" type="button" aria-label="Close">✕</button>
+        </div>
+        <div id="deviceModalContent"></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- 🔥 FIREBASE SDK                                             -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<!-- ✅ SECURE: Firebase config external file से load -->
+<!-- ⚠️ admin/firebase-config.js को .gitignore में रखें -->
+<script src="admin/firebase-config.js"></script>
+
+<script>
+// ============================================================
+// 🔥 FIREBASE CONFIG — EXTERNAL LOAD
+// ============================================================
+// ⚠️ admin/firebase-config.js में असली values होंगी:
+//
+// window.FIREBASE_CONFIG = {
+//     apiKey: "AIza...",
+//     authDomain: "your-project.firebaseapp.com",
+//     databaseURL: "https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app",
+//     projectId: "your-project-id",
+//     storageBucket: "your-project.firebasestorage.app",
+//     messagingSenderId: "123456789",
+//     appId: "1:123...:web:abc..."
+// };
+//
+// ⚠️ यह फ़ाइल .gitignore में होनी चाहिए
+// ============================================================
+
+const FIREBASE_CONFIG = window.FIREBASE_CONFIG || {
+    apiKey: "YOUR_FIREBASE_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT.firebasestorage.app",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+// Detect if config is still placeholder
+const IS_CONFIG_PLACEHOLDER = Object.values(FIREBASE_CONFIG).some(v =>
+    String(v).includes('YOUR_') || String(v).includes('YOUR-PROJECT')
+);
+
+// ============================================================
+// 🔐 SESSION & SECURITY CONSTANTS
+// ============================================================
+const NAME_SECRET_KEY = 'hk_name_secret';
+
+// Session timeout (30 min inactivity)
+const SESSION_TIMEOUT_MS = 30 * 60 * 1000;
+const SESSION_WARN_MS = 2 * 60 * 1000; // Warn 2 min before
+
+// Login rate limiting
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOGIN_LOCKOUT_MS = 5 * 60 * 1000; // 5 min
+const LOGIN_ATTEMPTS_KEY = 'hk_login_attempts';
+
+// Data cache & render limits
+const CACHE_TTL_MS = 30000;     // 30s cache
+const MAX_RENDER_ROWS = 500;    // Max rows to render
+
+// ============================================================
+// 🔥 INIT FIREBASE
+// ============================================================
+let auth = null;
+
+if (IS_CONFIG_PLACEHOLDER) {
+    console.error('❌ Firebase config not set. Update admin/firebase-config.js');
+    document.addEventListener('DOMContentLoaded', () => {
+        const authBox = document.querySelector('.auth-box');
+        if (authBox) {
+            authBox.innerHTML = `
+                <h2 style="color:#ef4444;">⚠️ Firebase Not Configured</h2>
+                <p style="text-align:left; line-height:1.7;">
+                    <b>Setup Steps:</b><br>
+                    1. Firebase Console → Project Settings → Web App<br>
+                    2. Copy config values<br>
+                    3. <code>admin/firebase-config.js</code> में paste करें<br>
+                    4. Firebase Rules में read permission add करें
+                </p>
+                <div style="background:#161b22; border:1px solid #30363d; border-radius:6px; padding:12px; margin-top:16px; text-align:left; font-family:monospace; font-size:0.75rem; color:#8b949e; line-height:1.6;">
+                    {<br>
+                    &nbsp;&nbsp;"rules": {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;"activations": {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".read": "auth != null",<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".write": false<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                    &nbsp;&nbsp;}<br>
+                    }
+                </div>
+            `;
+        }
+    });
+} else {
+    try {
+        firebase.initializeApp(FIREBASE_CONFIG);
+        auth = firebase.auth();
+    } catch (e) {
+        console.error('Firebase init failed:', e);
+        alert('Firebase init failed: ' + e.message);
+    }
+}
+
+// ============================================================
+// 📊 GLOBAL STATE
+// ============================================================
+let NAME_SECRET = null;
+let currentUser = null;
+let allData = [];
+let filteredData = [];
+let _lastLoadTime = 0;
+let _sessionTimer = null;
+let _sessionWarnTimer = null;
+
+// ============================================================
+// 🛡️ XSS ESCAPE HELPER
+// ============================================================
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/`/g, '&#96;');
+}
+
+// ============================================================
+// 🔐 SECRET MANAGEMENT (sessionStorage, not localStorage)
+// ============================================================
+function getStoredSecret() {
+    try {
+        return sessionStorage.getItem(NAME_SECRET_KEY) || null;
+    } catch (e) {
+        return null;
+    }
+}
+
+function saveSecret() {
+    const input = document.getElementById('nameSecretInput');
+    const val = (input.value || '').trim();
+
+    if (!val) {
+        alert('❌ Secret blank है!');
+        return;
+    }
+
+    if (val.length < 16) {
+        if (!confirm('⚠️ Secret छोटा है (16 chars से कम). Continue?')) return;
+    }
+
+    try {
+        sessionStorage.setItem(NAME_SECRET_KEY, val);
+        NAME_SECRET = val;
+        document.getElementById('secretModal').classList.remove('active');
+
+        // Retry decryption on already-loaded data
+        if (allData.length > 0) {
+            retryDecryption();
+        }
+    } catch (e) {
+        alert('❌ Save failed: ' + e.message);
+    }
+}
+
+function clearSecretAndReload() {
+    if (!confirm('Secret clear करके logout करना है?')) return;
+
+    try {
+        sessionStorage.removeItem(NAME_SECRET_KEY);
+    } catch (e) {}
+
+    if (auth && auth.currentUser) {
+        auth.signOut();
+    }
+
+    location.reload();
+}
+
+function showSecretModal() {
+    document.getElementById('secretModal').classList.add('active');
+    const input = document.getElementById('nameSecretInput');
+    input.value = '';
+    setTimeout(() => input.focus(), 150);
+}
+
+// ============================================================
+// 🔓 DECRYPT NAME (AES-GCM via PBKDF2)
+// ============================================================
+async function decryptName(encoded) {
+    if (!encoded) return null;
+    if (!NAME_SECRET) return '[Secret missing]';
+
+    // Check crypto availability
+    if (!window.crypto || !window.crypto.subtle) {
+        return '[Crypto unavailable]';
+    }
+
+    try {
+        const enc = new TextEncoder();
+
+        const keyMaterial = await crypto.subtle.importKey(
+            'raw',
+            enc.encode(NAME_SECRET),
+            { name: 'PBKDF2' },
+            false,
+            ['deriveKey']
+        );
+
+        const key = await crypto.subtle.deriveKey(
+            {
+                name: 'PBKDF2',
+                salt: enc.encode('HorKatha-Name-Salt-v1'),
+                iterations: 100000,
+                hash: 'SHA-256'
+            },
+            keyMaterial,
+            { name: 'AES-GCM', length: 256 },
+            false,
+            ['decrypt']
+        );
+
+        const combined = Uint8Array.from(atob(encoded), c => c.charCodeAt(0));
+        const iv = combined.slice(0, 12);
+        const ciphertext = combined.slice(12);
+
+        const plaintext = await crypto.subtle.decrypt(
+            { name: 'AES-GCM', iv },
+            key,
+            ciphertext
+        );
+
+        return new TextDecoder().decode(plaintext);
+    } catch (e) {
+        return '[Decrypt failed]';
+    }
+}
+
+async function retryDecryption() {
+    if (!NAME_SECRET) return;
+
+    for (const item of allData) {
+        if (item.customerName && !item.decryptedName) {
+            item.decryptedName = await decryptName(item.customerName);
+        }
+    }
+
+    applyFilters();
+}
+
+// ============================================================
+// 🔓 LOGIN RATE LIMITING
+// ============================================================
+function getLoginAttempts() {
+    try {
+        const raw = localStorage.getItem(LOGIN_ATTEMPTS_KEY);
+        return raw ? JSON.parse(raw) : { count: 0, until: 0 };
+    } catch (e) {
+        return { count: 0, until: 0 };
+    }
+}
+
+function setLoginAttempts(data) {
+    try {
+        localStorage.setItem(LOGIN_ATTEMPTS_KEY, JSON.stringify(data));
+    } catch (e) {}
+}
+
+function clearLoginAttempts() {
+    try {
+        localStorage.removeItem(LOGIN_ATTEMPTS_KEY);
+    } catch (e) {}
+}
+
+// ============================================================
+// 🔓 LOGIN HANDLER
+// ============================================================
+async function handleLogin() {
+    if (!auth) {
+        alert('Firebase not initialized');
+        return;
+    }
+
+    // Rate limiting check
+    const attempts = getLoginAttempts();
+    const now = Date.now();
+
+    if (attempts.until > now) {
+        const minutes = Math.ceil((attempts.until - now) / 60000);
+        const errorEl = document.getElementById('authError');
+        errorEl.textContent = `⏱️ Too many attempts. Try again in ${minutes} minute${minutes > 1 ? 's' : ''}.`;
+        errorEl.classList.add('show');
+        return;
+    }
+
+    const emailInput = document.getElementById('loginEmail');
+    const passwordInput = document.getElementById('loginPassword');
+    const loginBtn = document.getElementById('loginBtn');
+    const errorEl = document.getElementById('authError');
+    const loadingEl = document.getElementById('authLoading');
+
+    const email = (emailInput.value || '').trim();
+    const password = passwordInput.value || '';
+
+    errorEl.classList.remove('show');
+    errorEl.textContent = '';
+
+    if (!email || !password) {
+        errorEl.textContent = '❌ Email और password दोनों भरें';
+        errorEl.classList.add('show');
+        return;
+    }
+
+    loginBtn.disabled = true;
+    loginBtn.textContent = '⏳ Logging in...';
+    loadingEl.classList.add('show');
+
+    try {
+        await auth.signInWithEmailAndPassword(email, password);
+        clearLoginAttempts();
+        // onAuthStateChanged will handle the rest
+    } catch (err) {
+        console.error('Login error:', err);
+
+        // Update attempt counter
+        const newAttempts = getLoginAttempts();
+        newAttempts.count = (newAttempts.count || 0) + 1;
+        if (newAttempts.count >= MAX_LOGIN_ATTEMPTS) {
+            newAttempts.until = Date.now() + LOGIN_LOCKOUT_MS;
+            newAttempts.count = 0;
+        }
+        setLoginAttempts(newAttempts);
+
+        let msg = '❌ Login failed. ';
+        switch (err.code) {
+            case 'auth/invalid-email': msg += 'Email format गलत है'; break;
+            case 'auth/user-not-found': msg += 'यह email registered नहीं है'; break;
+            case 'auth/wrong-password': msg += 'Password गलत है'; break;
+            case 'auth/invalid-credential': msg += 'Email या password गलत है'; break;
+            case 'auth/too-many-requests': msg += 'बहुत attempts — थोड़ी देर बाद try करें'; break;
+            case 'auth/network-request-failed': msg += 'Internet connection check करें'; break;
+            default: msg += err.message || 'Unknown error';
+        }
+
+        if (newAttempts.until > Date.now()) {
+            msg += ` (Locked for 5 min)`;
+        }
+
+        errorEl.textContent = msg;
+        errorEl.classList.add('show');
+        loginBtn.disabled = false;
+        loginBtn.textContent = '🔓 Login';
+        loadingEl.classList.remove('show');
+    }
+}
+
+// ============================================================
+// 🚪 LOGOUT
+// ============================================================
+async function handleLogout() {
+    if (!confirm('Logout करना चाहते हैं?')) return;
+
+    try {
+        if (auth) await auth.signOut();
+        try {
+            sessionStorage.removeItem(NAME_SECRET_KEY);
+        } catch (e) {}
+        location.reload();
+    } catch (err) {
+        alert('Logout failed: ' + err.message);
+    }
+}
+
+// ============================================================
+// ⏱️ SESSION TIMEOUT
+// ============================================================
+function resetSessionTimer() {
+    if (_sessionTimer) clearTimeout(_sessionTimer);
+    if (_sessionWarnTimer) clearTimeout(_sessionWarnTimer);
+
+    // Warning timer (2 min before)
+    _sessionWarnTimer = setTimeout(() => {
+        if (auth && auth.currentUser) {
+            const stay = confirm('⏱️ Session 2 minutes में expire हो जाएगा. Continue?');
+            if (stay) resetSessionTimer();
+        }
+    }, SESSION_TIMEOUT_MS - SESSION_WARN_MS);
+
+    // Logout timer
+    _sessionTimer = setTimeout(() => {
+        if (auth && auth.currentUser) {
+            alert('⏱️ Session expired (30 min inactivity).\nDobara login karein.');
+            auth.signOut();
+        }
+    }, SESSION_TIMEOUT_MS);
+}
+
+['click', 'keydown', 'mousemove', 'scroll', 'touchstart'].forEach(evt => {
+    document.addEventListener(evt, resetSessionTimer, { passive: true });
+});
+
+// ============================================================
+// 🔥 AUTH STATE HANDLER
+// ============================================================
+if (auth) {
+    auth.onAuthStateChanged((user) => {
+        const authGate = document.getElementById('authGate');
+        const dashboard = document.getElementById('dashboardContent');
+        const loginBtn = document.getElementById('loginBtn');
+        const loadingEl = document.getElementById('authLoading');
+
+        if (user) {
+            currentUser = user;
+            console.log('✅ Logged in as:', user.email);
+            authGate.style.display = 'none';
+            dashboard.style.display = 'block';
+
+            const userInfo = document.getElementById('userInfo');
+            if (userInfo) userInfo.textContent = user.email;
+
+            if (loginBtn) {
+                loginBtn.disabled = false;
+                loginBtn.textContent = '🔓 Login';
+            }
+            if (loadingEl) loadingEl.classList.remove('show');
+
+            // Check secret (sessionStorage)
+            NAME_SECRET = getStoredSecret();
+            if (!NAME_SECRET) {
+                showSecretModal();
+            }
+
+            resetSessionTimer();
+            loadData();
+        } else {
+            currentUser = null;
+            authGate.style.display = 'flex';
+            dashboard.style.display = 'none';
+        }
+    });
+}
+
+// ============================================================
+// 📊 DATA LOADING
+// ============================================================
+async function loadData(forceRefresh = false) {
+    // Cache check
+    if (!forceRefresh && (Date.now() - _lastLoadTime) < CACHE_TTL_MS && allData.length > 0) {
+        console.log('📦 Using cached data');
+        applyFilters();
+        return;
+    }
+
+    setConnStatus('connecting', 'Connecting...');
+
+    try {
+        const snapshot = await firebase.database().ref('activations').once('value');
+        const data = snapshot.val();
+
+        if (!data || typeof data !== 'object') {
+            allData = [];
+            setConnStatus('ok', 'Connected — No data yet');
+        } else {
+            const raw = Object.keys(data).map(key => {
+                const entry = data[key] || {};
+                return {
+                    _key: key,
+                    anonId: entry.anonId || null,
+                    action: entry.action || null,
+                    plan: entry.plan || null,
+                    customerName: entry.customerName || null,
+                    nameHash: entry.nameHash || null,
+                    appVersion: entry.appVersion || null,
+                    platform: entry.platform || null,
+                    browser: entry.browser || null,
+                    timestamp: entry.timestamp || null
+                };
+            }).sort((a, b) => {
+                const tA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+                const tB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+                return tB - tA;
+            });
+
+            // Decrypt customer names
+            for (const item of raw) {
+                if (item.customerName && NAME_SECRET) {
+                    item.decryptedName = await decryptName(item.customerName);
+                }
+            }
+
+            allData = raw;
+            _lastLoadTime = Date.now();
+            setConnStatus('ok', `Connected — ${allData.length} records`);
+        }
+
+        applyFilters();
+        checkAlerts();
+    } catch (err) {
+        console.error('Load failed:', err);
+
+        if (err.code === 'PERMISSION_DENIED') {
+            setConnStatus('error', 'Permission denied — check Firebase Rules');
+        } else if (err.code === 'auth/network-request-failed') {
+            setConnStatus('error', 'Network error — check internet');
+        } else {
+            setConnStatus('error', 'Failed: ' + (err.message || 'Unknown'));
+        }
+    }
+}
+
+function setConnStatus(status, text) {
+    const dot = document.getElementById('connDot');
+    const txt = document.getElementById('connText');
+    if (!dot || !txt) return;
+
+    dot.className = 'dot' + (status === 'error' ? ' red' : status === 'connecting' ? ' orange' : '');
+    txt.textContent = text;
+}
+
+// ============================================================
+// 🔍 FILTERS
+// ============================================================
+function applyFilters() {
+    const planEl = document.getElementById('filterPlan');
+    const rangeEl = document.getElementById('filterRange');
+    const searchEl = document.getElementById('searchInput');
+
+    const plan = planEl ? planEl.value : '';
+    const range = rangeEl ? rangeEl.value : '';
+    const search = (searchEl ? searchEl.value : '').toLowerCase().trim();
+
+    const now = Date.now();
+    const dayMs = 24 * 60 * 60 * 1000;
+
+    filteredData = allData.filter(item => {
+        if (plan && item.plan !== plan) return false;
+
+        if (range && item.timestamp) {
+            const t = new Date(item.timestamp).getTime();
+            if (isNaN(t)) return true; // Keep if invalid
+            if (range === 'today' && (now - t) > dayMs) return false;
+            if (range === 'week' && (now - t) > 7 * dayMs) return false;
+            if (range === 'month' && (now - t) > 30 * dayMs) return false;
+        }
+
+        if (search) {
+            const haystack = [
+                item.anonId || '',
+                item.decryptedName || '',
+                item.nameHash || '',
+                item.plan || '',
+                item.browser || '',
+                item.platform || ''
+            ].join(' ').toLowerCase();
+            if (!haystack.includes(search)) return false;
+        }
+
+        return true;
+    });
+
+    renderTable();
+    updateStats();
+}
+
+// ============================================================
+// 📊 STATS
+// ============================================================
+function updateStats() {
+    const total = filteredData.length;
+    const dayMs = 24 * 60 * 60 * 1000;
+    const now = Date.now();
+
+    const today = filteredData.filter(x => {
+        if (!x.timestamp) return false;
+        return (now - new Date(x.timestamp).getTime()) < dayMs;
+    }).length;
+
+    const week = filteredData.filter(x => {
+        if (!x.timestamp) return false;
+        return (now - new Date(x.timestamp).getTime()) < 7 * dayMs;
+    }).length;
+
+    const uniqueDevices = new Set(
+        filteredData.map(x => x.anonId).filter(Boolean)
+    ).size;
+
+    const setText = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
+    };
+
+    setText('statTotal', total);
+    setText('statToday', today);
+    setText('statWeek', week);
+    setText('statDevices', uniqueDevices);
+
+    const p1 = filteredData.filter(x => x.plan === 'P1').length;
+    const p2 = filteredData.filter(x => x.plan === 'P2').length;
+    const p3 = filteredData.filter(x => x.plan === 'P3').length;
+
+    setText('planP1Count', p1);
+    setText('planP2Count', p2);
+    setText('planP3Count', p3);
+
+    const p1pct = total ? Math.round((p1 / total) * 100) : 0;
+    const p2pct = total ? Math.round((p2 / total) * 100) : 0;
+    const p3pct = total ? Math.round((p3 / total) * 100) : 0;
+
+    setText('planP1Pct', p1pct + '% of total');
+    setText('planP2Pct', p2pct + '% of total');
+    setText('planP3Pct', p3pct + '% of total');
+
+    const p1Bar = document.getElementById('planP1Bar');
+    const p2Bar = document.getElementById('planP2Bar');
+    const p3Bar = document.getElementById('planP3Bar');
+    if (p1Bar) p1Bar.style.width = p1pct + '%';
+    if (p2Bar) p2Bar.style.width = p2pct + '%';
+    if (p3Bar) p3Bar.style.width = p3pct + '%';
+
+    // Row count
+    setText('rowCount', `${filteredData.length} shown`);
+}
+
+// ============================================================
+// 🖥️ TABLE RENDER (XSS-Safe)
+// ============================================================
+function renderTable() {
+    const tbody = document.getElementById('tableBody');
+    if (!tbody) return;
+
+    if (filteredData.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="9">
+                    <div class="empty-state">
+                        <div class="emoji">📭</div>
+                        <p>No activations found</p>
+                        <p style="font-size: 0.75rem; margin-top: 6px;">
+                            ${allData.length > 0 ? 'Try changing filters' : 'Waiting for first activation'}
+                        </p>
+                    </div>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    // ✅ Limit rows for performance
+    const limited = filteredData.slice(0, MAX_RENDER_ROWS);
+    const frag = document.createDocumentFragment();
+
+    limited.forEach((item, idx) => {
+        const row = document.createElement('tr');
+
+        const plan = (item.plan || '').toLowerCase();
+        const time = item.timestamp ? formatTimeAgo(new Date(item.timestamp)) : 'unknown';
+        const anonId = item.anonId || '—';
+        const displayName = item.decryptedName || (item.customerName ? '[🔒 Encrypted]' : '—');
+        const key = item._key || '';
+
+        // Build cells safely
+        const cells = [
+            String(idx + 1),
+            { text: anonId, className: 'mono' },
+            { text: displayName, style: 'color:#3fb950; font-weight:800;' },
+            { html: `<span class="plan-badge ${escapeHtml(plan)}">${escapeHtml(item.plan || '—')}</span>` },
+            { text: item.action || '—', className: 'hide-mobile' },
+            { text: item.browser || '—', className: 'hide-mobile' },
+            { text: item.platform || '—', className: 'hide-mobile' },
+            { text: time, className: 'time-ago' }
+        ];
+
+        cells.forEach(cell => {
+            const td = document.createElement('td');
+            if (cell.className) td.className = cell.className;
+            if (cell.style) td.style.cssText = cell.style;
+            if (cell.html) {
+                td.innerHTML = cell.html; // Safe: escaped above
+            } else {
+                td.textContent = cell.text; // ✅ XSS-safe
+            }
+            row.appendChild(td);
+        });
+
+        // Actions cell
+        const actionCell = document.createElement('td');
+        const actionWrap = document.createElement('div');
+        actionWrap.className = 'row-actions';
+
+        const viewBtn = document.createElement('button');
+        viewBtn.className = 'row-btn view';
+        viewBtn.type = 'button';
+        viewBtn.textContent = '🔍 View';
+        viewBtn.dataset.action = 'view';
+        viewBtn.dataset.anonId = anonId;
+        actionWrap.appendChild(viewBtn);
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'row-btn delete';
+        delBtn.type = 'button';
+        delBtn.textContent = '🗑️ Delete';
+        delBtn.dataset.action = 'delete';
+        delBtn.dataset.key = key;
+        delBtn.dataset.anonId = anonId;
+        actionWrap.appendChild(delBtn);
+
+        actionCell.appendChild(actionWrap);
+        row.appendChild(actionCell);
+
+        frag.appendChild(row);
+    });
+
+    tbody.replaceChildren(frag);
+
+    // Show notification if limited
+    if (filteredData.length > MAX_RENDER_ROWS) {
+        const note = document.createElement('tr');
+        const noteCell = document.createElement('td');
+        noteCell.colSpan = 9;
+        noteCell.style.cssText = 'text-align:center; padding:12px; color:#f59e0b; font-weight:800; background:rgba(245,158,11,0.1);';
+        noteCell.textContent = `⚠️ Showing first ${MAX_RENDER_ROWS} of ${filteredData.length} rows. Use filters to narrow down.`;
+        note.appendChild(noteCell);
+        tbody.appendChild(note);
+    }
+}
+
+// ============================================================
+// 🕐 TIME AGO FORMATTER
+// ============================================================
+function formatTimeAgo(date) {
+    if (!date || isNaN(date.getTime())) return 'unknown';
+
+    const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+    if (seconds < 60) return 'just now';
+
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return minutes + 'm ago';
+
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return hours + 'h ago';
+
+    const days = Math.floor(hours / 24);
+    if (days < 30) return days + 'd ago';
+
+    return date.toLocaleDateString();
+}
+
+// ============================================================
+// 🔍 VIEW DEVICE — Multi-activation analysis
+// ============================================================
+function viewDevice(anonId) {
+    if (!anonId || anonId === '—') {
+        alert('इस entry में कोई Device ID नहीं है');
+        return;
+    }
+
+    const deviceEntries = allData.filter(x => x.anonId === anonId);
+    deviceEntries.sort((a, b) => {
+        const tA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+        const tB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+        return tA - tB;
+    });
+
+    const plans = [...new Set(deviceEntries.map(x => x.plan).filter(Boolean))];
+    const browsers = [...new Set(deviceEntries.map(x => x.browser).filter(Boolean))];
+    const platforms = [...new Set(deviceEntries.map(x => x.platform).filter(Boolean))];
+    const realNames = [...new Set(deviceEntries.map(x => x.decryptedName).filter(Boolean))];
+
+    const isSuspect = deviceEntries.length > 3 || plans.length > 1 || realNames.length > 1;
+
+    let html = `
+        <div class="device-info-card">
+            <div class="device-info-row">
+                <span class="device-info-label">🆔 Device ID:</span>
+                <span class="device-info-value">${escapeHtml(anonId)}</span>
+            </div>
+            <div class="device-info-row">
+                <span class="device-info-label">👤 Customer Name(s):</span>
+                <span class="device-info-value real-name">
+                    ${realNames.length > 0 ? realNames.map(n => escapeHtml(n)).join(' • ') : '—'}
+                </span>
+            </div>
+            <div class="device-info-row">
+                <span class="device-info-label">📊 Total Activations:</span>
+                <span class="device-info-value">
+                    ${deviceEntries.length}
+                    ${isSuspect ? '<span class="badge-suspect">🚨 SUSPECT</span>' : '<span class="badge-normal">✅ NORMAL</span>'}
+                </span>
+            </div>
+            <div class="device-info-row">
+                <span class="device-info-label">💼 Plans Used:</span>
+                <span class="device-info-value">${plans.length > 0 ? plans.map(p => escapeHtml(p)).join(', ') : '—'}</span>
+            </div>
+            <div class="device-info-row">
+                <span class="device-info-label">🌐 Browsers:</span>
+                <span class="device-info-value">${browsers.length > 0 ? browsers.map(b => escapeHtml(b)).join(', ') : '—'}</span>
+            </div>
+            <div class="device-info-row">
+                <span class="device-info-label">💻 Platforms:</span>
+                <span class="device-info-value">${platforms.length > 0 ? platforms.map(p => escapeHtml(p)).join(', ') : '—'}</span>
+            </div>
+        </div>
+    `;
+
+    if (isSuspect) {
+        html += `
+            <div style="background:rgba(220,38,38,0.1); border:1.5px solid #dc2626; border-radius:8px; padding:12px 16px; margin-bottom:14px; color:#ef4444; font-size:0.78rem; font-weight:700;">
+                <div style="font-weight:900; margin-bottom:6px;">🚨 Suspicious Activity Detected</div>
+                ${deviceEntries.length > 3 ? `• Ye device <b>${deviceEntries.length} baar</b> activate ho chuka hai<br>` : ''}
+                ${plans.length > 1 ? `• Multiple plans use kiye: <b>${plans.map(p => escapeHtml(p)).join(', ')}</b><br>` : ''}
+                ${realNames.length > 1 ? `• Multiple customer names: <b>${realNames.map(n => escapeHtml(n)).join(', ')}</b><br>` : ''}
+                <div style="margin-top:8px;">👉 Investigate karo — piracy ho sakti hai</div>
+            </div>
+        `;
+    }
+
+    html += `<div style="font-weight:900; color:#58a6ff; margin-bottom:8px; font-size:0.85rem;">📅 Activation Timeline:</div>`;
+    html += `<div style="max-height:300px; overflow-y:auto;">`;
+    html += `<table style="width:100%; border-collapse:collapse; font-size:0.75rem;">`;
+    html += `
+        <thead>
+            <tr>
+                <th style="text-align:left; padding:6px; background:#21262d; color:#58a6ff; font-size:0.68rem;">#</th>
+                <th style="text-align:left; padding:6px; background:#21262d; color:#58a6ff; font-size:0.68rem;">Name</th>
+                <th style="text-align:left; padding:6px; background:#21262d; color:#58a6ff; font-size:0.68rem;">Plan</th>
+                <th style="text-align:left; padding:6px; background:#21262d; color:#58a6ff; font-size:0.68rem;">Action</th>
+                <th style="text-align:left; padding:6px; background:#21262d; color:#58a6ff; font-size:0.68rem;">Browser</th>
+                <th style="text-align:left; padding:6px; background:#21262d; color:#58a6ff; font-size:0.68rem;">Date & Time</th>
+            </tr>
+        </thead>
+        <tbody>
+    `;
+
+    deviceEntries.forEach((entry, i) => {
+        const dt = entry.timestamp
+            ? new Date(entry.timestamp).toLocaleString('en-IN')
+            : '—';
+
+        html += `
+            <tr style="border-bottom:1px solid #21262d;">
+                <td style="padding:6px;">${i + 1}</td>
+                <td style="padding:6px; color:#3fb950; font-weight:800;">${escapeHtml(entry.decryptedName || '—')}</td>
+                <td style="padding:6px;"><span class="plan-badge ${(entry.plan || '').toLowerCase()}">${escapeHtml(entry.plan || '—')}</span></td>
+                <td style="padding:6px;">${escapeHtml(entry.action || '—')}</td>
+                <td style="padding:6px;">${escapeHtml(entry.browser || '—')}</td>
+                <td style="padding:6px; color:#8b949e;">${escapeHtml(dt)}</td>
+            </tr>
+        `;
+    });
+
+    html += `</tbody></table></div>`;
+
+    if (isSuspect) {
+        html += `
+            <div style="margin-top:16px; display:flex; gap:8px; justify-content:flex-end;">
+                <button class="red" data-action="bulk-delete" data-anon-id="${escapeHtml(anonId)}" style="background:#dc2626;">
+                    🗑️ Delete All ${deviceEntries.length} Entries
+                </button>
+            </div>
+        `;
+    }
+
+    const content = document.getElementById('deviceModalContent');
+    content.innerHTML = html; // Safe: all user data escaped
+
+    // Wire bulk delete button (event delegation safer)
+    const bulkBtn = content.querySelector('[data-action="bulk-delete"]');
+    if (bulkBtn) {
+        bulkBtn.addEventListener('click', () => {
+            deleteAllFromDevice(bulkBtn.dataset.anonId);
+        });
+    }
+
+    document.getElementById('deviceModal').classList.add('active');
+}
+
+function closeDeviceModal() {
+    document.getElementById('deviceModal').classList.remove('active');
+}
+
+// ============================================================
+// 🗑️ DELETE ENTRY
+// ============================================================
+async function deleteEntry(key, anonId) {
+    if (!key) {
+        alert('Entry key नहीं मिली');
+        return;
+    }
+
+    const confirmed = confirm(
+        `⚠️ Delete this entry?\n\nDevice: ${anonId}\n\nThis action cannot be undone!`
+    );
+    if (!confirmed) return;
+
+    try {
+        await firebase.database().ref('activations/' + key).remove();
+        console.log('✅ Deleted entry:', key);
+        alert('✅ Entry deleted');
+        loadData(true);
+    } catch (err) {
+        console.error('Delete failed:', err);
+        alert('❌ Delete failed: ' + err.message);
+    }
+}
+
+async function deleteAllFromDevice(anonId) {
+    const deviceEntries = allData.filter(x => x.anonId === anonId);
+
+    if (deviceEntries.length === 0) {
+        alert('कोई entry नहीं मिली');
+        return;
+    }
+
+    const confirmed = confirm(
+        `🚨 DELETE ALL ENTRIES?\n\n` +
+        `Device: ${anonId}\n` +
+        `Total entries: ${deviceEntries.length}\n\n` +
+        `⚠️ ये सभी ${deviceEntries.length} entries permanently delete हो जाएँगी!\n\n` +
+        `Confirm करने के लिए OK दबाएँ।`
+    );
+    if (!confirmed) return;
+
+    // Double confirmation for safety
+    const doubleConfirm = confirm(
+        `⚠️ FINAL CONFIRMATION ⚠️\n\n` +
+        `क्या आप वाकई ${deviceEntries.length} entries delete करना चाहते हैं?\n\n` +
+        `यह action UNDO नहीं हो सकती।`
+    );
+    if (!doubleConfirm) return;
+
+    try {
+        const updates = {};
+        deviceEntries.forEach(entry => {
+            updates['activations/' + entry._key] = null;
+        });
+
+        await firebase.database().ref().update(updates);
+
+        console.log('✅ Deleted', deviceEntries.length, 'entries');
+        closeDeviceModal();
+        alert(`✅ ${deviceEntries.length} entries deleted`);
+        loadData(true);
+    } catch (err) {
+        console.error('Bulk delete failed:', err);
+        alert('❌ Delete failed: ' + err.message);
+    }
+}
+
+// ============================================================
+// ⚠️ ALERTS — Suspicious activity detection
+// ============================================================
+function checkAlerts() {
+    const alertBox = document.getElementById('alertBox');
+    const alertText = document.getElementById('alertText');
+    if (!alertBox || !alertText) return;
+
+    const alerts = [];
+
+    // Multi-activation detection
+    const deviceCount = {};
+    allData.forEach(x => {
+        if (x.anonId) deviceCount[x.anonId] = (deviceCount[x.anonId] || 0) + 1;
+    });
+
+    const multiActivations = Object.entries(deviceCount).filter(([_, count]) => count > 3);
+    if (multiActivations.length > 0) {
+        alerts.push(`⚠️ ${multiActivations.length} device(s) have 3+ activations — click 🔍 View to investigate`);
+    }
+
+    // Recent burst detection
+    const oneHourAgo = Date.now() - 60 * 60 * 1000;
+    const recentBurst = allData.filter(x => {
+        if (!x.timestamp) return false;
+        return new Date(x.timestamp).getTime() > oneHourAgo;
+    }).length;
+
+    if (recentBurst >= 10) {
+        alerts.push(`🚨 ${recentBurst} activations in last hour — check for abuse`);
+    }
+
+    if (alerts.length > 0) {
+        alertText.innerHTML = alerts.map(a => escapeHtml(a)).join('<br>');
+        alertBox.classList.add('show');
+    } else {
+        alertBox.classList.remove('show');
+    }
+}
+
+// ============================================================
+// 🧹 CLEAR FILTERS
+// ============================================================
+function clearFilters() {
+    const planEl = document.getElementById('filterPlan');
+    const rangeEl = document.getElementById('filterRange');
+    const searchEl = document.getElementById('searchInput');
+
+    if (planEl) planEl.value = '';
+    if (rangeEl) rangeEl.value = '';
+    if (searchEl) searchEl.value = '';
+
+    applyFilters();
+}
+
+// ============================================================
+// 📥 CSV EXPORT (Formula injection safe)
+// ============================================================
+function exportCSV() {
+    if (filteredData.length === 0) {
+        alert('No data to export');
+        return;
+    }
+
+    // ✅ CSV formula injection protection
+    function csvSafe(val) {
+        let s = String(val === null || val === undefined ? '' : val);
+        // Escape formula prefixes: = + - @ Tab CR
+        if (/^[=+\-@\t\r]/.test(s)) {
+            s = "'" + s;
+        }
+        // Escape quotes
+        s = s.replace(/"/g, '""');
+        return '"' + s + '"';
+    }
+
+    const headers = [
+        '#', 'AnonDeviceID', 'RealName', 'Plan',
+        'Action', 'Browser', 'Platform', 'Timestamp'
+    ];
+
+    const rows = filteredData.map((x, i) => [
+        i + 1,
+        x.anonId || '',
+        x.decryptedName || '',
+        x.plan || '',
+        x.action || '',
+        x.browser || '',
+        x.platform || '',
+        x.timestamp || ''
+    ]);
+
+    const csv = [headers, ...rows]
+        .map(row => row.map(csvSafe).join(','))
+        .join('\n');
+
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `HorKatha_Activations_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    // ✅ RAF-based URL revoke (faster cleanup)
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            URL.revokeObjectURL(url);
+        });
+    });
+}
+
+// ============================================================
+// 🎯 EVENT LISTENERS
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    // ─── Login handlers ───
+    const loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) loginBtn.addEventListener('click', handleLogin);
+
+    const loginPw = document.getElementById('loginPassword');
+    if (loginPw) {
+        loginPw.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleLogin();
+            }
+        });
+    }
+
+    // ─── Secret modal handlers ───
+    const saveSecretBtn = document.getElementById('saveSecretBtn');
+    if (saveSecretBtn) saveSecretBtn.addEventListener('click', saveSecret);
+
+    const clearSecretBtn = document.getElementById('clearSecretBtn');
+    if (clearSecretBtn) clearSecretBtn.addEventListener('click', clearSecretAndReload);
+
+    const secretInput = document.getElementById('nameSecretInput');
+    if (secretInput) {
+        secretInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                saveSecret();
+            }
+        });
+    }
+
+    // ─── Header buttons ───
+    const refreshBtn = document.getElementById('refreshBtn');
+    if (refreshBtn) refreshBtn.addEventListener('click', () => loadData(true));
+
+    const exportBtn = document.getElementById('exportCsvBtn');
+    if (exportBtn) exportBtn.addEventListener('click', exportCSV);
+
+    const clearBtn = document.getElementById('clearFiltersBtn');
+    if (clearBtn) clearBtn.addEventListener('click', clearFilters);
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+
+    // ─── Filters ───
+    const filterPlan = document.getElementById('filterPlan');
+    if (filterPlan) filterPlan.addEventListener('change', applyFilters);
+
+    const filterRange = document.getElementById('filterRange');
+    if (filterRange) filterRange.addEventListener('change', applyFilters);
+
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) searchInput.addEventListener('input', applyFilters);
+
+    // ─── Device modal close ───
+    const deviceClose = document.getElementById('deviceModalClose');
+    if (deviceClose) deviceClose.addEventListener('click', closeDeviceModal);
+
+    const deviceModal = document.getElementById('deviceModal');
+    if (deviceModal) {
+        deviceModal.addEventListener('click', (e) => {
+            if (e.target.id === 'deviceModal') closeDeviceModal();
+        });
+    }
+
+    // ─── Table event delegation — actions ───
+    const tableBody = document.getElementById('tableBody');
+    if (tableBody) {
+        tableBody.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-action]');
+            if (!btn) return;
+
+            const action = btn.dataset.action;
+
+            if (action === 'view') {
+                viewDevice(btn.dataset.anonId);
+            } else if (action === 'delete') {
+                deleteEntry(btn.dataset.key, btn.dataset.anonId);
+            }
+        });
+    }
+
+    // ─── ESC key to close modals ───
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeDeviceModal();
+        }
+    });
+});
+
+// ============================================================
+// 🔄 AUTO-REFRESH (60s, only when tab visible)
+// ============================================================
+setInterval(() => {
+    if (currentUser && document.visibilityState === 'visible') {
+        loadData(true);
+    }
+}, 60000);
+
+// ============================================================
+// 📋 STARTUP LOG
+// ============================================================
+console.log('═══════════════════════════════════════════');
+console.log('✅ Dashboard loaded');
+console.log('   🔥 Firebase Auth ready');
+console.log('   🔒 Secure Name Decryption ready');
+console.log('   📊 Auto-refresh: 60s');
+console.log('   ⏱️  Session timeout: 30 min');
+console.log('   🔐 Login lockout: 5 attempts / 5 min');
+console.log('   ⚠️  Config source: admin/firebase-config.js');
+console.log('═══════════════════════════════════════════');
+</script>
+
+</body>
+</html>

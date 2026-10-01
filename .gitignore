@@ -1,0 +1,181 @@
+# ═══════════════════════════════════════════════════════════
+# 🚫 GITIGNORE — Hoṛ Katha Suite
+# BOSC Tech & Edu · v3.7.4
+# ═══════════════════════════════════════════════════════════
+
+# ═══════════════════════════════════════════════════════════
+# 🔐 ADMIN FOLDER (CRITICAL — ENTIRE FOLDER!)
+# ═══════════════════════════════════════════════════════════
+admin/
+
+# ═══════════════════════════════════════════════════════════
+# 🔐 SENSITIVE FILES (NEVER COMMIT)
+# ═══════════════════════════════════════════════════════════
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# Private keys
+*.key
+*.pem
+*.p12
+*.pfx
+private-key.json
+secrets.json
+
+# ═══════════════════════════════════════════════════════════
+# 📦 DEPENDENCIES
+# ═══════════════════════════════════════════════════════════
+node_modules/
+jspm_packages/
+bower_components/
+
+# ═══════════════════════════════════════════════════════════
+# 🏗️ BUILD OUTPUT
+# ═══════════════════════════════════════════════════════════
+dist/
+build/
+out/
+release/
+*.exe
+*.msi
+*.dmg
+*.AppImage
+*.snap
+*.deb
+*.rpm
+dist-electron/
+dist-app/
+
+# ═══════════════════════════════════════════════════════════
+# 📝 LOGS
+# ═══════════════════════════════════════════════════════════
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+build-error.log
+
+# ═══════════════════════════════════════════════════════════
+# 💻 EDITOR / IDE
+# ═══════════════════════════════════════════════════════════
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# ═══════════════════════════════════════════════════════════
+# 🖥️ OS FILES
+# ═══════════════════════════════════════════════════════════
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# ═══════════════════════════════════════════════════════════
+# 🧪 TESTING / COVERAGE
+# ═══════════════════════════════════════════════════════════
+coverage/
+.nyc_output/
+*.lcov
+
+# ═══════════════════════════════════════════════════════════
+# 📦 PACKAGE MANAGERS
+# ═══════════════════════════════════════════════════════════
+.npm
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+.pnpm-store/
+
+# ═══════════════════════════════════════════════════════════
+# 🎨 CACHE
+# ═══════════════════════════════════════════════════════════
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+.nuxt
+.next
+.output
+.vercel
+.netlify
+
+# ═══════════════════════════════════════════════════════════
+# 📊 TEMP FILES
+# ═══════════════════════════════════════════════════════════
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*.orig
+*.pid
+
+# ═══════════════════════════════════════════════════════════
+# 🔒 BACKUP FILES
+# ═══════════════════════════════════════════════════════════
+privacy.backup.js
+*_backup.*
+*.backup
+*-old.*
+
+# ═══════════════════════════════════════════════════════════
+# 📄 AUTO-GENERATED
+# ═══════════════════════════════════════════════════════════
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ═══════════════════════════════════════════════════════════
+# 📁 DOCS (Optional)
+# ═══════════════════════════════════════════════════════════
+docs/
+
+# ═══════════════════════════════════════════════════════════
+# 🎯 PROJECT-SPECIFIC
+# ═══════════════════════════════════════════════════════════
+hor_receipts.json
+hor_cert_history.json
+device_hwid.txt
+.hwid_backup.txt
+Typing_Certificate_*.png
+Typing_Certificate_*.jpg
+Certificate_*.pdf
+test-*.html
+test-*.js
+debug-*.html
+
+# ═══════════════════════════════════════════════════════════
+# ⚠️ KEEP THESE (Don't ignore)
+# ═══════════════════════════════════════════════════════════
+!.env.example
+!package.json
+!README.md
+!LICENSE
+!CHANGELOG.md
+!SECURITY.md
+!SETUP.md
+!CONTRIBUTING.md
+!CODE_OF_CONDUCT.md
+
+# ═══════════════════════════════════════════════════════════
+# END OF GITIGNORE
+# ═══════════════════════════════════════════════════════════
